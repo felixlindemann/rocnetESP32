@@ -1,0 +1,28 @@
+# PlatformIO build directories
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Secrets & Private credentials (NIEMALS ins Git-Repository!)
+secrets.h
+**/secrets.h
+!secrets.h.example
+!**/secrets.h.example
+*.local
+*.pem
+*.key
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# IDE & Editor settings
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.local
+.env.*
