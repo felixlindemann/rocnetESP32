@@ -2,11 +2,14 @@
 
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * WebServerManager: Integrierter HTTP-Webserver zur Weichenjustierung,
- * Signaldiagnose und RocNet-Knotenkonfiguration via Browser.
- * Basiert auf ESP32 WebServer Library (LGPL / Arduino-ESP32).
+ * DE: WebServerManager: Integrierter HTTP-Webserver zur Weichenjustierung,
+ *     Signaldiagnose und RocNet-Knotenkonfiguration via Browser.
+ *     Basiert auf ESP32 WebServer Library (LGPL / Arduino-ESP32).
+ * EN: WebServerManager: Embedded HTTP web server for servo finetuning,
+ *     signal diagnostics, and RocNet node configuration via browser.
+ *     Based on ESP32 WebServer Library (LGPL / Arduino-ESP32).
  * ==============================================================================
  */
 
@@ -23,13 +26,13 @@ class WebServerManager {
 public:
     WebServerManager();
 
-    // Start HTTP Web Server on port 80
+    // DE: HTTP-Webserver auf Port 80 starten / EN: Start HTTP web server on port 80
     void begin(ServoController* servoController, SignalOutput* signalOutput = nullptr, RocNetParser* rocNetParser = nullptr);
 
-    // Set callback for user-triggered Rocrail discovery/identify
+    // DE: Callback für Rocrail-Identify / EN: Set callback for user-triggered Rocrail discovery/identify
     void setIdentifyCallback(std::function<void()> cb) { _identifyCallback = cb; }
 
-    // Call continuously from loop()
+    // DE: Kontinuierlich im loop() aufrufen / EN: Call continuously from loop()
     void handleClient();
 
 private:

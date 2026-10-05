@@ -1,12 +1,13 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * Dekodierung der RocNet-Binärtelegramme gemäß Spezifikation:
- *   - Dokumentation: https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
- *   - Urheber:       Copyright (c) 2002-2026 Robert Jan Versluis, Rocrail.net
- *   - Offline-Kopie: literature/rocnet_rocnet-prot-en [Innovative Model Railroad Control System].html
- *   - Felddefinitionen und Offsets: lib/rocnet-const.h (Copied from Rocrail)
+ * DE: Dekodierung der RocNet-Binärtelegramme gemäß Spezifikation:
+ * EN: Decoding of RocNet binary packets according to official specification:
+ *   - Dokumentation / Documentation: https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
+ *   - Urheber / Author:             Copyright (c) 2002-2026 Robert Jan Versluis, Rocrail.net
+ *   - Spezifikation / Specification: literature/ROCNET_SPECIFICATION.md
+ *   - Felddefinitionen / Field Defs: lib/rocnet-const.h (Copied from Rocrail)
  * ==============================================================================
  */
 
@@ -45,24 +46,24 @@ const char* RocNetParser::commandTypeToString(RocNetCommandType type) {
 bool RocNetParser::parse(const uint8_t* buffer, size_t length, RocNetCommand& outCmd) {
     outCmd = RocNetCommand();
 
-    // Minimum packet length check (Header is 8 bytes)
+    // DE: Mindestpaketlänge prüfen (Header ist 8 Bytes) / EN: Minimum packet length check (Header is 8 bytes)
     if (buffer == nullptr || length < 8) {
         return false;
     }
 
-    // Byte 1..2 is the recipient Node ID in big-endian format
+    // DE: Byte 1..2 ist die Empfänger-Node-ID in Big-Endian / EN: Byte 1..2 is recipient Node ID in big-endian
     uint16_t recipientId = ((uint16_t)buffer[RN_PACKET_RCPTH] << 8) | buffer[RN_PACKET_RCPTL];
 
-    // Filter incoming packets: accept only matching Node-ID or broadcast (0 or 0xFFFF)
+    // DE: Eingehende Pakete filtern: eigene Node-ID oder Broadcast (0 oder 0xFFFF)
+    // EN: Filter incoming packets: accept matching Node ID or broadcast (0 or 0xFFFF)
     if (recipientId != _myNodeId && recipientId != 0 && recipientId != 0xFFFF) {
-        // Not addressed to this node, silently ignore
         return false;
     }
 
     outCmd.recipientNodeId = recipientId;
 
-    // Check whether this is the compact frame format from prompt01 (Group at Byte 3)
-    // or standard RocNet frame format (Group at Byte 5)
+    // DE: Prüfen auf kompaktes Frame-Format (Gruppe an Byte 3) oder Standard-RocNet (Gruppe an Byte 5)
+    // EN: Check whether this is compact frame format (Group at Byte 3) or standard RocNet (Group at Byte 5)
     uint8_t byte3 = buffer[3];
     if (byte3 == ROCNET_GROUP_ASPECT || byte3 == ROCNET_GROUP_TURNOUT || byte3 == ROCNET_GROUP_SERVO_DIRECT) {
         return parseCompactFrame(buffer, length, recipientId, outCmd);
@@ -74,19 +75,19 @@ bool RocNetParser::parse(const uint8_t* buffer, size_t length, RocNetCommand& ou
 bool RocNetParser::parseCompactFrame(const uint8_t* buffer, size_t length, uint16_t recipientId, RocNetCommand& outCmd) {
     uint8_t group = buffer[3];
     outCmd.group = group;
-    outCmd.port = buffer[5]; // Byte 5: Port / Signaladresse (1-basiert)
+    outCmd.port = buffer[5]; // DE: Byte 5: Port / Signaladresse (1-basiert) / EN: Byte 5: Port (1-based)
 
     switch (group) {
         case ROCNET_GROUP_ASPECT: { // 0x08: Aspect numbers
             outCmd.type = RocNetCommandType::SIGNAL_ASPECT;
-            // Byte 6: Aspect Value High Byte, Byte 7: Aspect Value Low Byte
+            // DE: Byte 6: Aspect High Byte, Byte 7: Aspect Low Byte / EN: Aspect value bytes
             outCmd.aspectMask = ((uint16_t)buffer[6] << 8) | buffer[7];
             return true;
         }
 
         case ROCNET_GROUP_TURNOUT: { // 0x02: Classical turnout
             outCmd.type = RocNetCommandType::TURNOUT_SWITCH;
-            // State: 0 = straight (gerade), 1 = thrown (abzweigend)
+            // DE: Zustand: 0 = Gerade, 1 = Abzweig / EN: State: 0 = straight, 1 = thrown
             outCmd.turnoutState = (buffer[6] != 0 || buffer[7] != 0);
             return true;
         }
@@ -105,7 +106,7 @@ bool RocNetParser::parseCompactFrame(const uint8_t* buffer, size_t length, uint1
 bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint16_t recipientId, RocNetCommand& outCmd) {
     if (length < 8) return false;
 
-    // Header fields according to rocnet-const.h and documentation
+    // DE: Header-Felder gemäß rocnet-const.h / EN: Header fields according to rocnet-const.h
     outCmd.netId = buffer[RN_PACKET_NETID];
     outCmd.senderNodeId = ((uint16_t)buffer[RN_PACKET_SNDRH] << 8) | buffer[RN_PACKET_SNDRL];
     uint8_t group = buffer[RN_PACKET_GROUP];
@@ -114,8 +115,8 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     uint8_t actionType = (actionRaw & RN_ACTION_TYPE_MASK) >> 5;
     uint8_t dataLen = buffer[RN_PACKET_LEN];
 
-    // According to RocNet specification:
-    // If the action type is EVENT (1) or REPLY (2), no real I/O action should be taken
+    // DE: Gemäß RocNet-Spezifikation: Bei EVENT (1) oder REPLY (2) keine I/O-Aktion ausführen
+    // EN: According to RocNet specification: If action type is EVENT (1) or REPLY (2), take no I/O action
     if (actionType != RN_ACTIONTYPE_REQUEST) {
         return false;
     }
@@ -130,7 +131,7 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     }
 
     // -------------------------------------------------------------------------
-    // 0. Group 0: Host (RN_GROUP_HOST)
+    // 0. Group 0: Host / Zentralbefehle (RN_GROUP_HOST)
     // -------------------------------------------------------------------------
     if (group == RN_GROUP_HOST) {
         if (actionCode == RN_HOST_PING) {
@@ -144,33 +145,29 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     }
 
     // -------------------------------------------------------------------------
-    // 1. Group 9: Output (RN_GROUP_OUTPUT)
+    // 1. Group 9: Output / Ausgänge & Signal-Aspekte (RN_GROUP_OUTPUT)
     // -------------------------------------------------------------------------
     if (group == RN_GROUP_OUTPUT) {
-        // Action 14 (0x0E): Rocrail native Signal Aspect command
+        // DE: Aktion 14 (0x0E): Rocrail natives Signal Aspect Telegramm
+        // EN: Action 14 (0x0E): Rocrail native signal aspect command
         if (actionCode == 14 || actionCode == 0x0E) {
             if (dataLen >= 7) {
                 outCmd.type = RocNetCommandType::SIGNAL_ASPECT;
-                // data[4] is the address/port (1-based)
                 outCmd.port = (data[4] > 0) ? data[4] : 1;
-                outCmd.rawAspect = data[3]; // data[3] is the aspect index (0, 1, 2...)
+                outCmd.rawAspect = data[3];
 
-                uint8_t blinkByte = data[5];  // High byte: Blink bitmask (e.g. 0x02 for Value 512)
-                uint8_t staticByte = data[6]; // Low byte: Static bitmask (e.g. 0x01 for Value 1, 0x02 for Value 2)
+                uint8_t blinkByte = data[5];  // DE: Blink-Maske / EN: Blink bitmask
+                uint8_t staticByte = data[6]; // DE: Statische Maske / EN: Static bitmask
                 uint16_t combinedValue = ((uint16_t)blinkByte << 8) | staticByte;
                 outCmd.aspectValue = combinedValue;
 
                 outCmd.rawDataLen = (dataLen < sizeof(outCmd.rawData)) ? dataLen : sizeof(outCmd.rawData);
                 memcpy(outCmd.rawData, data, outCmd.rawDataLen);
 
-                // Rocrail Aspect Values:
-                // Low Byte (data[6]) = static LED mask (Bit 0: Red, Bit 1: Green, Bit 2: Yellow)
-                // High Byte (data[5]) = blinking LED mask (e.g. 0x02 = Value 512 = Green Blinking!)
                 if (combinedValue > 0) {
                     outCmd.aspectMask = staticByte | blinkByte;
                     outCmd.blinkMask  = blinkByte;
                 } else {
-                    // Fallback to aspect index mapping (data[3]: 0 -> Aspect 1, 1 -> Aspect 2, 2 -> Aspect 3)
                     uint8_t aspectIdx = data[3] + 1;
                     if (aspectIdx == 1) {
                         outCmd.aspectMask = ASPECT_1_MASK;
@@ -190,18 +187,17 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
             }
         }
 
-        // Action 1: On, Action 0: Off
+        // DE: Aktion 1: Ein, Aktion 0: Aus / EN: Action 1: On, Action 0: Off
         if (actionCode == RN_OUTPUT_SWITCH || actionCode == 0) {
-            // Check for Type 6 (Macro / Signals / Aspects)
+            // DE: Typ 6 (Makro / Signale / Aspekte) / EN: Type 6 (Macro / Signals / Aspects)
             if (dataLen >= 3 && data[0] == 6) {
                 outCmd.type = RocNetCommandType::SIGNAL_ASPECT;
-                // data[1] = 0, data[2] = aspect, data[3] = macro offset / port
                 outCmd.aspectMask = data[2];
                 outCmd.port = (dataLen >= 4) ? data[3] : 1;
                 return true;
             }
 
-            // Check if packet uses 4-byte layout [state, type, delay, port]
+            // DE: 4-Byte-Layout [state, type, delay, port] / EN: 4-byte layout [state, type, delay, port]
             if (dataLen >= 4 && (data[0] <= 1) && (data[1] <= 7)) {
                 uint8_t state = data[0];
                 uint8_t outType = data[1];
@@ -218,17 +214,16 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
                 outCmd.type = RocNetCommandType::TURNOUT_SWITCH;
                 outCmd.port = port;
                 outCmd.turnoutState = (actionCode == 0) ? false : (state != 0);
-                outCmd.delayMs = delayVal; // Switch time byte from Rocrail
+                outCmd.delayMs = delayVal;
                 return true;
             }
 
-            // Official RocNet 3-byte layout: [type, value, address/port]
+            // DE: Standard 3-Byte-Layout [type, value, address/port] / EN: Standard 3-byte layout
             if (dataLen >= 3) {
                 uint8_t outType = data[0];
                 uint8_t val = data[1];
                 uint8_t port = data[2];
 
-                // Type 0 = Switch, Type 1 = Light, Type 2 = Servo
                 outCmd.type = RocNetCommandType::TURNOUT_SWITCH;
                 outCmd.port = port;
                 outCmd.turnoutState = (actionCode == 0) ? false : (val != 0);
@@ -238,32 +233,32 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     }
 
     // -------------------------------------------------------------------------
-    // 2. Group 3: Stationary decoders (RN_GROUP_STATIONARY)
+    // 2. Group 3: Stationary / Stationäre Decoder (RN_GROUP_STATIONARY)
     // -------------------------------------------------------------------------
     if (group == RN_GROUP_STATIONARY) {
-        // Action 1: Single Port, Action 2: Port Pair
+        // DE: Aktion 1: Einzelport, Aktion 2: Port-Paar / EN: Action 1: Single port, Action 2: Port pair
         if (actionCode == RN_STATIONARY_SINGLE_PORT || actionCode == RN_STATIONARY_PORT_PAIR) {
             if (dataLen >= 4) {
                 outCmd.type = RocNetCommandType::TURNOUT_SWITCH;
-                outCmd.turnoutState = (data[0] != 0); // 0 = close/straight, 1 = throw/turnout
-                outCmd.port = data[3];                // data 4 is port
+                outCmd.turnoutState = (data[0] != 0); // 0 = Gerade / straight, 1 = Abzweig / thrown
+                outCmd.port = data[3];
                 return true;
             }
         }
 
-        // Action 8: Identify Query, Action 12: Start of Day
+        // DE: Aktion 8: Identify, Aktion 12: Start of Day / EN: Action 8: Identify, Action 12: Start of Day
         if (actionCode == RN_STATIONARY_IDENTIFY || actionCode == RN_STATIONARY_STARTOFDAY) {
             outCmd.type = RocNetCommandType::IDENTIFY_REQUEST;
             return true;
         }
 
-        // Action 11: Show / Identify LED flash
+        // DE: Aktion 11: Show (LED-Blinken) / EN: Action 11: Show / Identify LED flash
         if (actionCode == RN_STATIONARY_SHOW) {
             outCmd.type = RocNetCommandType::SHOW_IDENTIFY;
             return true;
         }
 
-        // Action 4: Query Single Port, Action 5: Query Port Pair
+        // DE: Aktion 4 & 5: Port-Zustandsabfrage / EN: Action 4 & 5: Query Port State
         if (actionCode == RN_STATIONARY_QUERY_SINGLE_PORT || actionCode == RN_STATIONARY_QUERY_PORT_PAIR) {
             outCmd.type = RocNetCommandType::PORT_QUERY;
             uint8_t p = 1;
@@ -278,40 +273,40 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     }
 
     // -------------------------------------------------------------------------
-    // 3. Group 5: Programming Stationary (RN_GROUP_PT_STATIONARY)
+    // 3. Group 5: Programming Stationary / Programmierung (RN_GROUP_PT_STATIONARY)
     // -------------------------------------------------------------------------
     if (group == RN_GROUP_PT_STATIONARY) {
-        // Action 6: Set RocNet ID (idH, idL, subipH, subipL)
+        // DE: Aktion 6: Node-ID schreiben / EN: Action 6: Set RocNet Node ID
         if (actionCode == RN_PROGRAMMING_WRNID && dataLen >= 2) {
             outCmd.type = RocNetCommandType::NODE_ID_WRITE;
-            outCmd.servoValue = ((uint16_t)data[0] << 8) | data[1]; // target new node ID
+            outCmd.servoValue = ((uint16_t)data[0] << 8) | data[1];
             return true;
         }
 
-        // Action 7: Read hardware options & I2C scan report
+        // DE: Aktion 7: Hardware-Optionen & I2C-Scan lesen / EN: Action 7: Read hardware options & I2C scan
         if (actionCode == RN_PROGRAMMING_RDOPT) {
             outCmd.type = RocNetCommandType::OPTIONS_READ;
             return true;
         }
 
-        // Action 11: Remote soft reboot
+        // DE: Aktion 11: Remote-Neustart / EN: Action 11: Remote soft reboot
         if (actionCode == RN_PROGRAMMING_UPDATE) {
             outCmd.type = RocNetCommandType::SOFTWARE_RESET;
             return true;
         }
 
-        // Action 18: Set channel (Direct servo position: channel, valueH, valueL)
+        // DE: Aktion 18: Kanal direkt stellen / EN: Action 18: Set channel direct servo position
         if (actionCode == RN_PROGRAMMING_SETCHANNEL && dataLen >= 3) {
             outCmd.type = RocNetCommandType::SERVO_DIRECT;
-            outCmd.port = data[0]; // channel# (1..16)
+            outCmd.port = data[0];
             outCmd.servoValue = ((uint16_t)data[1] << 8) | data[2];
             return true;
         }
 
-        // Action 16: Write channel config (channel#, offposH, offposL, onposH, onposL, offsteps, onsteps, options)
+        // DE: Aktion 16: Kanalkonfiguration schreiben / EN: Action 16: Write channel config
         if (actionCode == RN_PROGRAMMING_WCHANNEL && dataLen >= 8) {
             outCmd.type = RocNetCommandType::CHANNEL_CONFIG_WRITE;
-            outCmd.port = data[0]; // channel# (1..16)
+            outCmd.port = data[0];
             outCmd.offPos = ((uint16_t)data[1] << 8) | data[2];
             outCmd.onPos  = ((uint16_t)data[3] << 8) | data[4];
             outCmd.offSteps = data[5];
@@ -320,20 +315,19 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
             return true;
         }
 
-        // Action 15: Read channel config (from channel, to channel)
+        // DE: Aktion 15: Kanalkonfiguration lesen / EN: Action 15: Read channel config
         if (actionCode == RN_PROGRAMMING_RCHANNEL && dataLen >= 1) {
             outCmd.type = RocNetCommandType::CHANNEL_CONFIG_READ;
-            outCmd.port = data[0]; // from channel
-            outCmd.servoValue = (dataLen >= 2) ? data[1] : data[0]; // to channel
+            outCmd.port = data[0];
+            outCmd.servoValue = (dataLen >= 2) ? data[1] : data[0];
             return true;
         }
     }
 
     // -------------------------------------------------------------------------
-    // 4. Group 1: Command Station (RN_GROUP_CS)
+    // 4. Group 1: Command Station / Zentrale (RN_GROUP_CS)
     // -------------------------------------------------------------------------
     if (group == RN_GROUP_CS) {
-        // Action 9: Switch (addrH, addrL, port, gate, action)
         if (actionCode == RN_CS_SWITCH && dataLen >= 5) {
             outCmd.type = RocNetCommandType::TURNOUT_SWITCH;
             outCmd.port = data[2];
@@ -343,7 +337,7 @@ bool RocNetParser::parseStandardFrame(const uint8_t* buffer, size_t length, uint
     }
 
     // -------------------------------------------------------------------------
-    // 5. Fallback for Prompt01 groups in standard frame wrapper
+    // 5. Fallback für Legacy-Gruppen / Fallback for legacy group formats
     // -------------------------------------------------------------------------
     if (group == ROCNET_GROUP_ASPECT) {
         outCmd.type = RocNetCommandType::SIGNAL_ASPECT;

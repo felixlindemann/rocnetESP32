@@ -1,8 +1,9 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * AppLog Implementierung: Ringspeicher, Serial-Ausgabe und JSON-Generierung
+ * DE: AppLog Implementierung - Ringspeicher, serielle Ausgabe und JSON-Export.
+ * EN: AppLog implementation - circular ring buffer, serial output & JSON export.
  * ==============================================================================
  */
 
@@ -16,7 +17,7 @@ AppLogger& AppLogger::getInstance() {
 }
 
 AppLogger::AppLogger()
-    : _currentLevel(AppLogLevel::LOG_ERROR), // DEFAULT: Fehler
+    : _currentLevel(AppLogLevel::LOG_ERROR), // DE: DEFAULT: Fehler / EN: DEFAULT: Error
       _head(0),
       _count(0),
       _nextId(1) {
@@ -43,7 +44,7 @@ const char* AppLogger::levelToString(AppLogLevel level) {
 }
 
 void AppLogger::log(AppLogLevel level, const char* format, ...) {
-    // Only process if message level is within active filter
+    // DE: Nur verarbeiten, wenn Stufe im aktiven Filter liegt / EN: Only process if level is within active filter
     // LOG_ERROR = 1, LOG_DEBUG = 2, LOG_INFO = 3
     if (static_cast<uint8_t>(level) > static_cast<uint8_t>(_currentLevel)) {
         return;
@@ -58,14 +59,14 @@ void AppLogger::log(AppLogLevel level, const char* format, ...) {
     uint32_t nowMs = 0;
 #ifdef ARDUINO
     nowMs = millis();
-    // Print to Serial Console
+    // DE: Ausgabe auf serielle Konsole / EN: Print to serial console
     const char* tag = levelToString(level);
     Serial.printf("[%7u ms] [%-5s] %s\n", nowMs, tag, buf);
 #else
     printf("[%-5s] %s\n", levelToString(level), buf);
 #endif
 
-    // Save to circular ring buffer
+    // DE: Im Ringspeicher ablegen / EN: Save to circular ring buffer
     LogEntry& entry = _entries[_head];
     entry.id = _nextId++;
     entry.timestampMs = nowMs;
@@ -111,7 +112,7 @@ String AppLogger::getLogsJson(uint32_t sinceId) const {
             json += ",\"level\":\"";
             json += levelToString(e.level);
             json += "\",\"msg\":\"";
-            // Escape json characters in msg
+            // DE: JSON-Sonderzeichen in Nachricht maskieren / EN: Escape JSON special characters in msg
             for (size_t c = 0; e.message[c] != '\0'; c++) {
                 char ch = e.message[c];
                 if (ch == '"' || ch == '\\') {

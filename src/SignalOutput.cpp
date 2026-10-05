@@ -1,10 +1,14 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * SignalOutput Implementierung: WS2811 Signalsteuerung
- * Verwendet NeoPixelBus (Makuna, LGPLv3) und Rocrail Aspect-Bitmasken
- * (https://wiki.rocrail.net/doku.php?id=aspects-en).
+ * DE: SignalOutput Implementierung: WS2811 Signalsteuerung via RMT-Hardware.
+ * EN: SignalOutput implementation: WS2811 model railroad signal control via RMT.
+ *
+ * DE: Verwendet NeoPixelBus (Makuna, LGPLv3) und Rocrail Aspect-Bitmasken
+ *     (https://wiki.rocrail.net/doku.php?id=aspects-en).
+ * EN: Uses NeoPixelBus (Makuna, LGPLv3) and Rocrail aspect bitmask mapping
+ *     (https://wiki.rocrail.net/doku.php?id=aspects-en).
  * ==============================================================================
  */
 

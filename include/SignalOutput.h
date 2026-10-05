@@ -2,15 +2,17 @@
 
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * SignalOutput: Ansteuerung von Signalen via WS2811 LED-Ketten
+ * DE: SignalOutput: Ansteuerung von Signalen via WS2811 LED-Ketten
+ * EN: SignalOutput: Model railway signal control via WS2811 LED strings
  *
- * Externe Bibliothek:
+ * Externe Bibliothek / External Library:
  *   - NeoPixelBus by Makuna (LGPLv3) für ESP32 RMT-Hardware-Treiber
  *
- * Modellbahn- & Protokollbezug:
- *   - Aspect-Bitmasken-Interpretation und Signalbild-Zuordnung gemäß Rocrail:
+ * Modellbahn- & Protokollbezug / Model Railroad & Protocol Reference:
+ *   - DE: Aspect-Bitmasken-Interpretation und Signalbild-Zuordnung gemäß Rocrail:
+ *   - EN: Aspect bitmask interpretation and signal mapping according to Rocrail:
  *     https://wiki.rocrail.net/doku.php?id=aspects-en
  *     https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
  *     (Copyright (c) Robert Jan Versluis, Rocrail.net)
@@ -22,40 +24,41 @@
 #include <map>
 #include "Config.h"
 
-// Encapsulation of WS2811 LED outputs for railway signals using NeoPixelBus via RMT
+// DE: Kapselung der WS2811-LED-Ausgänge für Signale via NeoPixelBus (RMT-Hardware)
+// EN: Encapsulation of WS2811 LED outputs for railway signals using NeoPixelBus via RMT
 class SignalOutput {
 public:
     explicit SignalOutput(uint8_t pin = WS2811_DATA_PIN);
     ~SignalOutput();
 
-    // Initialize with dynamic pin, number of WS2811 chips and initial brightness
+    // DE: Initialisierung mit Pin, Chipanzahl und Helligkeit
+    // EN: Initialize with dynamic pin, number of WS2811 chips and initial brightness
     bool begin(uint8_t pin, uint16_t numChips = DEFAULT_WS2811_CHIP_COUNT, uint8_t brightness = DEFAULT_SIGNAL_BRIGHTNESS);
     bool begin(uint16_t numChips = DEFAULT_WS2811_CHIP_COUNT, uint8_t brightness = DEFAULT_SIGNAL_BRIGHTNESS);
 
-    // Dynamic reconfiguration of chip count at runtime
+    // DE: Chipanzahl zur Laufzeit rekonfigurieren / EN: Dynamic reconfiguration of chip count
     void setChipCount(uint16_t numChips);
     uint16_t getChipCount() const;
 
-    // Configurable brightness (0..255)
+    // DE: Einstellbare Gesamthelligkeit (0..255) / EN: Configurable brightness (0..255)
     void setBrightness(uint8_t brightness);
     uint8_t getBrightness() const;
 
-    // Map a Rocrail signal port (1-based) to an arbitrary start channel (0-based)
-    // Default mapping if not explicitly mapped: startChannel = (port - 1) * 3
+    // DE: Port auf Startkanal mappen (Standard: (port - 1) * 3)
+    // EN: Map a Rocrail signal port (1-based) to an arbitrary start channel (0-based)
     void setPortStartChannel(uint16_t port, uint16_t startChannel);
     uint16_t getPortStartChannel(uint16_t port) const;
 
-    // Set aspect for a given port (1-based) according to Rocrail aspect bitmask
-    // blinkMask specifies which bits/LEDs of the aspect should blink
+    // DE: Signalbegriff (Aspect) mit Bitmaske setzen / EN: Set aspect according to Rocrail aspect bitmask
     void setAspect(uint16_t port, uint16_t aspectMask, uint16_t blinkMask = 0);
 
-    // Turn off all outputs
+    // DE: Alle Ausgänge ausschalten / EN: Turn off all outputs
     void clearAll();
 
-    // Non-blocking update loop (handles blinking timer and calls Show() when needed)
+    // DE: Nicht-blockierende Blinksteuerung im loop() / EN: Non-blocking update loop (handles blinking timer)
     void update();
 
-    // Visual test sequence for hardware verification
+    // DE: Optisches Testmuster für Signale / EN: Visual test sequence for hardware verification
     void testPattern();
 
 private:

@@ -2,17 +2,18 @@
  * ==============================================================================
  * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
  * ==============================================================================
- * STATUS: Copied from Rocrail (Unveränderter / Verbatim C-Header)
+ * STATUS:       Copied from Rocrail (C-Header / Preprocessor Constants)
  *
- * PROJEKT:      Rocrail - Model Railroad Software
- * DATEI:        rocnet-const.h (aus rocnet-const.h.zip)
- * QUELLE:       https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
- * URHEBER:      Copyright (c) 2002-2017 Robert Jan Versluis, Rocrail.net
- * RECHTE:       All rights reserved.
+ * PROJEKT / PROJECT: Rocrail - Model Railroad Software
+ * DATEI / FILE:      rocnet-const.h (aus / from rocnet-const.h.zip)
+ * QUELLE / SOURCE:   https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
+ * URHEBER / AUTHOR:  Copyright (c) 2002-2017 Robert Jan Versluis, Rocrail.net
+ * RECHTE / RIGHTS:   All rights reserved / Alle Rechte vorbehalten.
  *
- * VERWENDUNG:   Konstanten-, Gruppen- und Aktionsdefinitionen des RocNet-Protokolls
- *               zur Gewährleistung der Protokoll-Interoperabilität 
- *               (gemäß EU-Richtlinie 2009/24/EG Art. 6 / § 69e UrhG).
+ * [DE] VERWENDUNG:   Konstanten-, Gruppen- und Aktionsdefinitionen des RocNet-Protokolls
+ *                    zur Gewährleistung der Protokoll-Interoperabilität (§ 69e UrhG).
+ * [EN] USAGE:        Constant, group, and action definitions of the RocNet protocol
+ *                    to ensure protocol interoperability (EU Directive 2009/24/EC Art. 6).
  * ==============================================================================
  */
 

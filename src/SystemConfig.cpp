@@ -1,8 +1,9 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * SystemConfig Implementierung: NVS-Persistierung der Controller-Konfiguration
+ * DE: SystemConfig Implementierung - NVS-Persistierung der Controller-Konfiguration.
+ * EN: SystemConfig implementation - NVS Flash persistence of system settings.
  * ==============================================================================
  */
 

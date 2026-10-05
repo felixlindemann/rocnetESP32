@@ -2,10 +2,12 @@
 
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * WebUI: Eingebettetes HTML5/CSS3/JavaScript-Frontend für die ESP32-Weboberfläche.
- * Dient der Weichenkalibrierung, Signalüberwachung und Systemkonfiguration.
+ * DE: WebUI: Eingebettetes HTML5/CSS3/JavaScript-Frontend für die ESP32-Weboberfläche.
+ *     Dient der Weichenkalibrierung, Signalüberwachung, Systemkonfiguration und Live-Log.
+ * EN: WebUI: Embedded HTML5/CSS3/JavaScript frontend for the ESP32 web interface.
+ *     Provides turnout calibration, signal monitoring, system configuration & live logs.
  * ==============================================================================
  */
 

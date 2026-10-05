@@ -1,10 +1,14 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * ServoController Implementierung: PCA9685 I2C Weichenservos
- * Verwendet Adafruit PWM Servo Driver Library (BSD-Lizenz) und implementiert
- * RocNet Port-Mapping und Konfigurationsparameter (OffPos, OnPos, Steps).
+ * DE: ServoController Implementierung: PCA9685 I2C Weichenservos mit Sanftanlauf.
+ * EN: ServoController implementation: PCA9685 I2C servo turnout control.
+ *
+ * DE: Verwendet Adafruit PWM Servo Driver Library (BSD-Lizenz) und implementiert
+ *     RocNet Port-Mapping und Konfigurationsparameter (OffPos, OnPos, Steps).
+ * EN: Uses Adafruit PWM Servo Driver Library (BSD License) and implements
+ *     RocNet port mapping and configuration parameters (OffPos, OnPos, Steps).
  * ==============================================================================
  */
 

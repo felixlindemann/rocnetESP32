@@ -1,10 +1,24 @@
-Copied from Rocrail
-===================
+Copied from Rocrail / Aus Rocrail kopiert
+=========================================
 
-All files and subdirectories in this directory (literature/) are copied from the official Rocrail Wiki documentation:
+[EN]
+All files and specifications in this directory (literature/) are derived from
+the official Rocrail Wiki documentation:
 URL: https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
 
 Original Copyright (c) 2002-2026 Robert Jan Versluis, Rocrail.net.
 All rights reserved.
 
-These materials are included in this repository strictly for offline reference and protocol interoperability purposes.
+These materials are included in this repository strictly for offline reference
+and technical protocol interoperability purposes (EU Directive 2009/24/EC Art. 6).
+
+[DE]
+Alle Dateien und Spezifikationen in diesem Verzeichnis (literature/) basieren
+auf der offiziellen Dokumentation des Rocrail-Wikis:
+URL: https://www.rocrail-wiki.net/doku.php?id=rocnet:rocnet-prot-en
+
+Urheberrecht (c) 2002-2026 Robert Jan Versluis, Rocrail.net.
+Alle Rechte vorbehalten.
+
+Diese Unterlagen sind in diesem Repository ausschließlich zu technischen Referenzzwecken
+und zur Gewährleistung der Protokoll-Interoperabilität enthalten (§ 69e UrhG).

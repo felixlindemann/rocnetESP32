@@ -1,8 +1,9 @@
 /*
  * ==============================================================================
- * QUELLENNACHWEIS / SOURCE ATTRIBUTION:
+ * QUELLENNACHWEIS & LIZENZ / SOURCE ATTRIBUTION & LICENSE:
  * ==============================================================================
- * WebServerManager Implementierung: Web-Dashboard und REST-Endpoints
+ * DE: WebServerManager Implementierung - Web-Dashboard und REST-Endpoints.
+ * EN: WebServerManager implementation - web dashboard and REST API endpoints.
  * ==============================================================================
  */
 
